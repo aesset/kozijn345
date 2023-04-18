@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="650" height="929.7777777777777" viewBox="-20 -20 650 929.7777777777777">
+<defs>
+</defs>
+<rect x="0" y="0" width="650" height="68" fill="white" stroke="black" />
+<rect x="0" y="68" width="68" height="793.7777777777777" fill="white" stroke="black" />
+<rect x="0" y="861.7777777777777" width="650" height="68" fill="white" stroke="black" />
+<rect x="582" y="68" width="68" height="793.7777777777777" fill="white" stroke="black" />
+<rect x="143" y="68" width="364.0" height="75" fill="white" stroke="black" />
+<rect x="143" y="776.7777777777777" width="364.0" height="85" fill="white" stroke="black" />
+<rect x="68" y="68" width="75" height="793.7777777777777" fill="white" stroke="black" />
+<rect x="507.0" y="68" width="75" height="793.7777777777777" fill="white" stroke="black" />
+<rect x="143.0" y="143.0" width="105.33333333333333" height="140.44444444444443" fill="#eef4f5" stroke="black" />
+<rect x="143.0" y="307.44444444444446" width="105.33333333333333" height="140.44444444444443" fill="#eef4f5" stroke="black" />
+<rect x="143.0" y="471.88888888888886" width="105.33333333333333" height="140.44444444444443" fill="#eef4f5" stroke="black" />
+<rect x="143.0" y="636.3333333333333" width="105.33333333333333" height="140.44444444444443" fill="#eef4f5" stroke="black" />
+<rect x="272.3333333333333" y="143.0" width="105.33333333333333" height="140.44444444444443" fill="#eef4f5" stroke="black" />
+<rect x="272.3333333333333" y="307.44444444444446" width="105.33333333333333" height="140.44444444444443" fill="#eef4f5" stroke="black" />
+<rect x="272.3333333333333" y="471.88888888888886" width="105.33333333333333" height="140.44444444444443" fill="#eef4f5" stroke="black" />
+<rect x="272.3333333333333" y="636.3333333333333" width="105.33333333333333" height="140.44444444444443" fill="#eef4f5" stroke="black" />
+<rect x="401.66666666666663" y="143.0" width="105.33333333333333" height="140.44444444444443" fill="#eef4f5" stroke="black" />
+<rect x="401.66666666666663" y="307.44444444444446" width="105.33333333333333" height="140.44444444444443" fill="#eef4f5" stroke="black" />
+<rect x="401.66666666666663" y="471.88888888888886" width="105.33333333333333" height="140.44444444444443" fill="#eef4f5" stroke="black" />
+<rect x="401.66666666666663" y="636.3333333333333" width="105.33333333333333" height="140.44444444444443" fill="#eef4f5" stroke="black" />
+<path d="M143,283 L248,283 L260.0,295.0 L248,307 L143,307 L143,283" stroke="black" stroke-width="1" fill="white" />
+<path d="M248,143 L248,283 L260.0,295.0 L272,283 L272,143 L248,143" stroke="black" stroke-width="1" fill="white" />
+<path d="M143,447 L248,447 L260.0,459.0 L248,471 L143,471 L143,447" stroke="black" stroke-width="1" fill="white" />
+<path d="M248,307 L248,447 L260.0,459.0 L272,447 L272,307 L260.0,295.0 L248,307" stroke="black" stroke-width="1" fill="white" />
+<path d="M143,612 L248,612 L260.0,624.0 L248,636 L143,636 L143,612" stroke="black" stroke-width="1" fill="white" />
+<path d="M248,471 L248,611 L260.0,623.0 L272,611 L272,471 L260.0,459.0 L248,471" stroke="black" stroke-width="1" fill="white" />
+<path d="M248,636 L248,776 L272,776 L272,636 L260.0,624.0 L248,636" stroke="black" stroke-width="1" fill="white" />
+<path d="M272,283 L377,283 L389.0,295.0 L377,307 L272,307 L260.0,295.0 L272,283" stroke="black" stroke-width="1" fill="white" />
+<path d="M377,143 L377,283 L389.0,295.0 L401,283 L401,143 L377,143" stroke="black" stroke-width="1" fill="white" />
+<path d="M272,447 L377,447 L389.0,459.0 L377,471 L272,471 L260.0,459.0 L272,447" stroke="black" stroke-width="1" fill="white" />
+<path d="M377,307 L377,447 L389.0,459.0 L401,447 L401,307 L389.0,295.0 L377,307" stroke="black" stroke-width="1" fill="white" />
+<path d="M272,612 L377,612 L389.0,624.0 L377,636 L272,636 L260.0,624.0 L272,612" stroke="black" stroke-width="1" fill="white" />
+<path d="M377,471 L377,611 L389.0,623.0 L401,611 L401,471 L389.0,459.0 L377,471" stroke="black" stroke-width="1" fill="white" />
+<path d="M377,636 L377,776 L401,776 L401,636 L389.0,624.0 L377,636" stroke="black" stroke-width="1" fill="white" />
+<path d="M401,283 L506,283 L506,307 L401,307 L389.0,295.0 L401,283" stroke="black" stroke-width="1" fill="white" />
+<path d="M401,447 L506,447 L506,471 L401,471 L389.0,459.0 L401,447" stroke="black" stroke-width="1" fill="white" />
+<path d="M401,612 L506,612 L506,636 L401,636 L389.0,624.0 L401,612" stroke="black" stroke-width="1" fill="white" />
+</svg>
