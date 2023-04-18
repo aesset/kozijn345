@@ -9,30 +9,30 @@ from kozijn import Roede
 from kozijn import Stijl
 
 
-def rectangle_dorpel(x: int, y: int, dorpel: Dorpel) -> Rectangle:
+def create_rectangle_for_dorpel(x: int, y: int, dorpel: Dorpel) -> Rectangle:
     return Rectangle(x, y, dorpel.lengte, dorpel.hoogte,
                      fill='white', stroke='black', transform=f'scale({SCALE})')
 
 
-def rectangle_stijl(x: int, y: int, stijl: Stijl) -> Rectangle:
+def create_rectangle_for_stijl(x: int, y: int, stijl: Stijl) -> Rectangle:
     return Rectangle(x, y, stijl.breedte, stijl.lengte,
                      fill='white', stroke='black', transform=f'scale({SCALE})')
 
 
 def draw_kozijn(d, kozijn: Kozijn):
-    d.append(rectangle_dorpel(0, 0, kozijn.bovendorpel))
-    d.append((rectangle_stijl(0, kozijn.bovendorpel.hoogte, kozijn.linkerstijl)))
-    d.append(rectangle_dorpel(0, kozijn.onderdorpel.hoogte + kozijn.linkerstijl.lengte, kozijn.onderdorpel))
-    d.append((rectangle_stijl(kozijn.bovendorpel.lengte - kozijn.rechterstijl.breedte, kozijn.bovendorpel.hoogte,
-                              kozijn.rechterstijl)))
+    d.append(create_rectangle_for_dorpel(0, 0, kozijn.bovendorpel))
+    d.append((create_rectangle_for_stijl(0, kozijn.bovendorpel.hoogte, kozijn.linkerstijl)))
+    d.append(create_rectangle_for_dorpel(0, kozijn.onderdorpel.hoogte + kozijn.linkerstijl.lengte, kozijn.onderdorpel))
+    d.append((create_rectangle_for_stijl(kozijn.bovendorpel.lengte - kozijn.rechterstijl.breedte, kozijn.bovendorpel.hoogte,
+                                         kozijn.rechterstijl)))
 
 
 def draw_raam(d, x, y, raam: Raam):
-    d.append(rectangle_dorpel(x + raam.linkerstijl.breedte, y, raam.bovendorpel))
-    d.append(rectangle_dorpel(x + raam.linkerstijl.breedte, y + raam.linkerstijl.lengte - raam.onderdorpel.hoogte,
-                              raam.onderdorpel))
-    d.append(rectangle_stijl(x, y, raam.linkerstijl))
-    d.append(rectangle_stijl(x + raam.linkerstijl.breedte + raam.bovendorpel.lengte, y, raam.rechterstijl))
+    d.append(create_rectangle_for_dorpel(x + raam.linkerstijl.breedte, y, raam.bovendorpel))
+    d.append(create_rectangle_for_dorpel(x + raam.linkerstijl.breedte, y + raam.linkerstijl.lengte - raam.onderdorpel.hoogte,
+                                         raam.onderdorpel))
+    d.append(create_rectangle_for_stijl(x, y, raam.linkerstijl))
+    d.append(create_rectangle_for_stijl(x + raam.linkerstijl.breedte + raam.bovendorpel.lengte, y, raam.rechterstijl))
 
     raampjes_offset_x = x + raam.linkerstijl.breedte
     raampjes_offset_y = y + raam.bovendorpel.hoogte
