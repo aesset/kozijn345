@@ -3,4 +3,4 @@
 
 Voorbeeld:
 
-![](/home/eelco/dev/python/kozijn345/doc/kozijn.png)
+![Image](doc/kozijn.png?raw=true)
