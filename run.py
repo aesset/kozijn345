@@ -15,7 +15,7 @@ zicht_raam_boven = 75
 zicht_raam_onder = 85
 
 breedte_roedes = 24
-breedte_roedes_midden = 18
+breedte_roedes_midden = 18  # doet ie nog niets mee
 aantal_roedes_staand = 2
 aantal_roedes_liggend = 3
 
