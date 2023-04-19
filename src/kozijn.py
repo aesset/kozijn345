@@ -24,14 +24,16 @@ class Kozijn:
 class Raam:
     def __init__(self, bovendorpel: Dorpel, onderdorpel: Dorpel,
                  linkerstijl: Stijl, rechterstijl: Stijl,
-                 breedte_roedes: int, aantal_roedes_staand: int, aantal_roedes_liggend: int,
+                 breedte_roedes: int, roede_randje: int,
+                 aantal_roedes_staand: int, aantal_roedes_liggend: int,
                  raampjes: list, roedes: list):
         self.bovendorpel = bovendorpel
         self.onderdorpel = onderdorpel
         self.linkerstijl = linkerstijl
         self.rechterstijl = rechterstijl
-        self.breedte_roedes = breedte_roedes,
-        self.aantal_roedes_staand = aantal_roedes_staand,
+        self.breedte_roedes = breedte_roedes
+        self.roede_randje = roede_randje
+        self.aantal_roedes_staand = aantal_roedes_staand
         self.aantal_roedes_liggend = aantal_roedes_liggend
         self.breedte = self.bovendorpel.lengte + self.linkerstijl.breedte + self.rechterstijl.breedte
         self.raampjes = raampjes
@@ -188,6 +190,6 @@ def create_raam_kozijn(zicht_kozijn_stijlen: int,
                            breedte_roedes, breedte_roedes_midden)
 
     raam = Raam(raam_dorpel_boven, raam_dorpel_onder, raam_stijl_links, raam_stijl_rechts,
-                breedte_roedes, aantal_roedes_staand, aantal_roedes_liggend, raampjes, roedes)
+                breedte_roedes, breedte_roedes_midden, aantal_roedes_staand, aantal_roedes_liggend, raampjes, roedes)
 
     return RaamKozijn(kozijn, raam)

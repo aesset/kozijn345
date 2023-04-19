@@ -1,10 +1,10 @@
 from drawsvg import Drawing
 
 from config import SCALE
-from draw_kozijn import draw_kozijn
-from draw_kozijn import draw_raam
-from draw_kozijn import draw_roedes
-from kozijn import create_raam_kozijn
+from src.draw_kozijn import draw_kozijn
+from src.draw_kozijn import draw_raam
+from src.draw_kozijn import draw_roedes
+from src.kozijn import create_raam_kozijn
 
 zicht_kozijn_stijlen = 68
 zicht_kozijn_boven = 68
@@ -15,15 +15,15 @@ zicht_raam_boven = 75
 zicht_raam_onder = 85
 
 breedte_roedes = 24
-breedte_roedes_midden = 18  # doet ie nog niets mee
-aantal_roedes_staand = 2
-aantal_roedes_liggend = 3
+roede_randje = 4
+aantal_roedes_staand = 1
+aantal_roedes_liggend = 2
 
-kozijn_breedte = 850
+kozijn_breedte = 750
 
 raam_kozijn = create_raam_kozijn(zicht_kozijn_stijlen, zicht_kozijn_boven, zicht_kozijn_onder,
                                  zicht_raam_stijlen, zicht_raam_boven, zicht_raam_onder,
-                                 breedte_roedes, breedte_roedes_midden,
+                                 breedte_roedes, roede_randje,
                                  aantal_roedes_staand, aantal_roedes_liggend,
                                  kozijn_breedte)
 
