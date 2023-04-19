@@ -14,7 +14,7 @@ zicht_raam_stijlen = 75
 zicht_raam_boven = 75
 zicht_raam_onder = 85
 
-breedte_roedes = 24
+breedte_roedes = 21
 roede_randje = 4
 aantal_roedes_staand = 1
 aantal_roedes_liggend = 2
