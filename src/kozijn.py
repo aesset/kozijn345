@@ -48,17 +48,14 @@ class Kozijn:
 
 
 class Raam:
-    def __init__(self, bovendorpel: Dorpel, onderdorpel: Dorpel,
-                 linkerstijl: Stijl, rechterstijl: Stijl,
-                 breedte_roedes: int, roede_randje: int,
-                 aantal_roedes_staand: int, aantal_roedes_liggend: int,
-                 raampjes: list, roedes: list):
+    def __init__(self, bovendorpel: Dorpel, onderdorpel: Dorpel, linkerstijl: Stijl, rechterstijl: Stijl,
+                 breedte_roedes: int, aantal_roedes_staand: int, aantal_roedes_liggend: int, raampjes: list,
+                 roedes: list):
         self.bovendorpel = bovendorpel
         self.onderdorpel = onderdorpel
         self.linkerstijl = linkerstijl
         self.rechterstijl = rechterstijl
         self.breedte_roedes = breedte_roedes
-        self.roede_randje = roede_randje
         self.aantal_roedes_staand = aantal_roedes_staand
         self.aantal_roedes_liggend = aantal_roedes_liggend
         self.breedte = self.bovendorpel.lengte + self.linkerstijl.breedte + self.rechterstijl.breedte
@@ -88,111 +85,16 @@ class Raam:
         linker_bovenhoek_raampjes_x = x + self.linkerstijl.breedte
         linker_bovenhoek_raampjes_y = y + self.bovendorpel.hoogte
 
-        roede_randje = self.roede_randje
 
         roede: Roede
         for roede in self.roedes:
 
-            coordinates = Coordinates()
-
             start_roede_x = linker_bovenhoek_raampjes_x + roede.x
             start_roede_y = linker_bovenhoek_raampjes_y + roede.y
-            x = start_roede_x
-            y = start_roede_y
-            coordinates.add(x, y)
 
-            if roede.pos == 'h':
-                x, y = coordinates.move(roede.lengte, 0)
+            roede.draw(d, start_roede_x, start_roede_y)
 
-                if roede.verstek_eind:
-                    coordinates.set_without_memory(x + (roede.breedte / 2),
-                                                   y + (roede.breedte / 2))
 
-                x, y = coordinates.move(0, roede.breedte)
-                x, y = coordinates.move(-roede.lengte, 0)
-
-                if roede.verstek_begin:
-                    coordinates.set_without_memory(x - (roede.breedte / 2),
-                                                   y - (roede.breedte / 2))
-
-                x, y = coordinates.move(0, -roede.breedte)
-
-            if roede.pos == 'v':
-                x, y = coordinates.move(0, roede.lengte)
-
-                if roede.verstek_eind:
-                    coordinates.set_without_memory(x + (roede.breedte / 2),
-                                                   y + (roede.breedte / 2))
-
-                x, y = coordinates.move(roede.breedte, 0)
-                x, y = coordinates.move(0, -roede.lengte)
-
-                if roede.verstek_begin:
-                    coordinates.set_without_memory(x - (roede.breedte / 2),
-                                                   y - (roede.breedte / 2))
-
-                x, y = coordinates.move(-roede.breedte, 0)
-
-            drawy_xy_as_line_on_d(d, coordinates)
-
-            if roede_randje > 0:
-
-                if roede.pos == 'h':
-
-                    coordinates = Coordinates()
-
-                    if roede.verstek_begin:
-                        x, y = coordinates.move(start_roede_x - roede_randje, start_roede_y + roede_randje)
-                    else:
-                        x, y = coordinates.move(start_roede_x, start_roede_y + roede_randje)
-
-                    x = start_roede_x + roede.lengte
-                    if roede.verstek_eind:
-                        x += roede_randje
-                    coordinates.add(x, y)
-
-                    drawy_xy_as_line_on_d(d, coordinates)
-
-                    coordinates = Coordinates()
-
-                    y = start_roede_y + roede.breedte - roede_randje
-                    coordinates.add(x, y)
-
-                    x = start_roede_x
-                    if roede.verstek_begin:
-                        x -= roede_randje
-                    coordinates.add(x, y)
-
-                    drawy_xy_as_line_on_d(d, coordinates)
-
-                if roede.pos == 'v':
-
-                    coordinates = Coordinates()
-
-                    x = start_roede_x + roede_randje
-                    y = start_roede_y
-                    if roede.verstek_begin:
-                        y -= roede_randje
-                    coordinates.add(x, y)
-
-                    y = start_roede_y + roede.lengte
-                    if roede.verstek_eind:
-                        y += roede_randje
-                    coordinates.add(x, y)
-
-                    drawy_xy_as_line_on_d(d, coordinates)
-
-                    coordinates = Coordinates()
-
-                    x = start_roede_x + roede.breedte - roede_randje
-                    coordinates.add(x, y)
-
-                    y = start_roede_y
-                    if roede.verstek_begin:
-                        y -= roede_randje
-                    coordinates.add(x, y)
-
-                    drawy_xy_as_line_on_d(d, coordinates)
 
 
 class RaamKozijn:
@@ -226,19 +128,119 @@ def create_raampjes(aantal_raampjes_horizontaal, aantal_raampjes_verticaal, bree
 
 
 class Roede:
-    def __init__(self, x, y, breedte, lengte, breedte_midden, pos, verstek_begin: bool, verstek_eind: bool):
+    def __init__(self, x, y, breedte, lengte, roede_randje, pos, verstek_begin: bool, verstek_eind: bool):
         self.x = int(x)
         self.y = int(y)
         self.breedte = breedte
         self.lengte = int(lengte)
-        self.breedte_midden = breedte_midden
+        self.roede_randje = roede_randje
         self.pos = pos
         self.verstek_begin = verstek_begin
         self.verstek_eind = verstek_eind
 
     def __str__(self):
-        return f'Roede: {self.x},{self.y}, {self.breedte}x{self.lengte}x{self.breedte_midden} ' \
+        return f'Roede: {self.x},{self.y}, {self.breedte}x{self.lengte}x{self.roede_randje} ' \
                f'pos={self.pos} verstek:{self.verstek_begin}/{self.verstek_eind}'
+
+    def draw(self, d, start_roede_x, start_roede_y):
+        x = start_roede_x
+        y = start_roede_y
+
+        coordinates = Coordinates()
+        coordinates.add(x, y)
+
+        if self.pos == 'h':
+            x, y = coordinates.move(self.lengte, 0)
+
+            if self.verstek_eind:
+                coordinates.set_without_memory(x + (self.breedte / 2),
+                                               y + (self.breedte / 2))
+
+            x, y = coordinates.move(0, self.breedte)
+            x, y = coordinates.move(-self.lengte, 0)
+
+            if self.verstek_begin:
+                coordinates.set_without_memory(x - (self.breedte / 2),
+                                               y - (self.breedte / 2))
+
+            x, y = coordinates.move(0, -self.breedte)
+
+        if self.pos == 'v':
+            x, y = coordinates.move(0, self.lengte)
+
+            if self.verstek_eind:
+                coordinates.set_without_memory(x + (self.breedte / 2),
+                                               y + (self.breedte / 2))
+
+            x, y = coordinates.move(self.breedte, 0)
+            x, y = coordinates.move(0, -self.lengte)
+
+            if self.verstek_begin:
+                coordinates.set_without_memory(x - (self.breedte / 2),
+                                               y - (self.breedte / 2))
+
+            x, y = coordinates.move(-self.breedte, 0)
+
+        drawy_xy_as_line_on_d(d, coordinates)
+
+        if self.roede_randje > 0:
+
+            if self.pos == 'h':
+
+                coordinates = Coordinates()
+
+                if self.verstek_begin:
+                    x, y = coordinates.move(start_roede_x - self.roede_randje, start_roede_y + self.roede_randje)
+                else:
+                    x, y = coordinates.move(start_roede_x, start_roede_y + self.roede_randje)
+
+                x = start_roede_x + self.lengte
+                if self.verstek_eind:
+                    x += self.roede_randje
+                coordinates.add(x, y)
+
+                drawy_xy_as_line_on_d(d, coordinates)
+
+                coordinates = Coordinates()
+
+                y = start_roede_y + self.breedte - self.roede_randje
+                coordinates.add(x, y)
+
+                x = start_roede_x
+                if self.verstek_begin:
+                    x -= self.roede_randje
+                coordinates.add(x, y)
+
+                drawy_xy_as_line_on_d(d, coordinates)
+
+            if self.pos == 'v':
+
+                coordinates = Coordinates()
+
+                x = start_roede_x + self.roede_randje
+                y = start_roede_y
+                if self.verstek_begin:
+                    y -= self.roede_randje
+                coordinates.add(x, y)
+
+                y = start_roede_y + self.lengte
+                if self.verstek_eind:
+                    y += self.roede_randje
+                coordinates.add(x, y)
+
+                drawy_xy_as_line_on_d(d, coordinates)
+
+                coordinates = Coordinates()
+
+                x = start_roede_x + self.breedte - self.roede_randje
+                coordinates.add(x, y)
+
+                y = start_roede_y
+                if self.verstek_begin:
+                    y -= self.roede_randje
+                coordinates.add(x, y)
+
+                drawy_xy_as_line_on_d(d, coordinates)
 
 
 def create_roedes(aantal_raampjes_horizontaal,
@@ -246,7 +248,7 @@ def create_roedes(aantal_raampjes_horizontaal,
                   breedte_raampje,
                   hoogte_raampje,
                   breedte_roedes,
-                  breedte_roedes_midden):
+                  roede_randje):
     roedes = []
 
     for x in range(aantal_raampjes_horizontaal):
@@ -262,7 +264,7 @@ def create_roedes(aantal_raampjes_horizontaal,
                     verstek_begin = False
                 if x == aantal_raampjes_horizontaal - 1:
                     verstek_eind = False
-                roede = Roede(roede_x, roede_y, breedte_roedes, breedte_raampje, breedte_roedes_midden,
+                roede = Roede(roede_x, roede_y, breedte_roedes, breedte_raampje, roede_randje,
                               positie, verstek_begin, verstek_eind)
                 print(f'Roede: {roede}')
                 roedes.append(roede)
@@ -277,7 +279,7 @@ def create_roedes(aantal_raampjes_horizontaal,
                     verstek_begin = False
                 if y == aantal_raampjes_verticaal - 1:
                     verstek_eind = False
-                roede = Roede(roede_x, roede_y, breedte_roedes, hoogte_raampje, breedte_roedes_midden,
+                roede = Roede(roede_x, roede_y, breedte_roedes, hoogte_raampje, roede_randje,
                               positie, verstek_begin, verstek_eind)
                 print(f'Roede: {roede}')
                 roedes.append(roede)
@@ -292,7 +294,7 @@ def create_raam_kozijn(zicht_kozijn_stijlen: int,
                        zicht_raam_boven: int,
                        zicht_raam_onder: int,
                        breedte_roedes: int,
-                       breedte_roedes_midden: int,
+                       roede_randje: int,
                        aantal_roedes_staand: int,
                        aantal_roedes_liggend: int,
                        totaal_kozijn_breedte) -> RaamKozijn:
@@ -340,10 +342,10 @@ def create_raam_kozijn(zicht_kozijn_stijlen: int,
                                breedte_roedes)
 
     roedes = create_roedes(aantal_raampjes_horizontaal, aantal_raampjes_verticaal, breedte_raampje, hoogte_raampje,
-                           breedte_roedes, breedte_roedes_midden)
+                           breedte_roedes, roede_randje)
 
-    raam = Raam(raam_dorpel_boven, raam_dorpel_onder, raam_stijl_links, raam_stijl_rechts,
-                breedte_roedes, breedte_roedes_midden, aantal_roedes_staand, aantal_roedes_liggend, raampjes, roedes)
+    raam = Raam(raam_dorpel_boven, raam_dorpel_onder, raam_stijl_links, raam_stijl_rechts, breedte_roedes,
+                aantal_roedes_staand, aantal_roedes_liggend, raampjes, roedes)
 
     return RaamKozijn(kozijn, raam)
 
