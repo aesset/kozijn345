@@ -30,14 +30,17 @@ class Dorpel:
 
 
 class Kozijn:
-    def __init__(self, bovendorpel: Dorpel, onderdorpel: Dorpel,
-                 linkerstijl: Stijl, rechterstijl: Stijl):
-        self.bovendorpel = bovendorpel
-        self.onderdorpel = onderdorpel
-        self.linkerstijl = linkerstijl
-        self.rechterstijl = rechterstijl
-        self.breedte = onderdorpel.lengte
-        self.hoogte = linkerstijl.lengte + onderdorpel.hoogte + bovendorpel.hoogte
+    def __init__(self, zicht_kozijn_stijlen, kozijn_stijl_lengte,
+                 zicht_kozijn_boven, zicht_kozijn_onder, totaal_kozijn_breedte):
+
+        self.linkerstijl = Stijl(zicht_kozijn_stijlen, kozijn_stijl_lengte)
+        self.rechterstijl = Stijl(zicht_kozijn_stijlen, kozijn_stijl_lengte)
+
+        self.onderdorpel = Dorpel(zicht_kozijn_boven, totaal_kozijn_breedte)
+        self.bovendorpel = Dorpel(zicht_kozijn_onder, totaal_kozijn_breedte)
+
+        self.breedte = self.onderdorpel.lengte
+        self.hoogte = self.linkerstijl.lengte + self.onderdorpel.hoogte + self.bovendorpel.hoogte
 
     def draw(self, d, x, y):
         self.bovendorpel.draw(d, x, y)
@@ -128,13 +131,7 @@ class RaamKozijn:
 
         totaal_hoogte_kozijn = kozijn_stijl_lengte + totaal_zicht_kozijn_plus_raam_hoogte
 
-        kozijn_stijl_links = Stijl(zicht_kozijn_stijlen, kozijn_stijl_lengte)
-        kozijn_stijl_rechts = Stijl(zicht_kozijn_stijlen, kozijn_stijl_lengte)
-
-        kozijn_dorpel_onder = Dorpel(zicht_kozijn_boven, totaal_kozijn_breedte)
-        kozijn_dorpel_boven = Dorpel(zicht_kozijn_onder, totaal_kozijn_breedte)
-
-        kozijn = Kozijn(kozijn_dorpel_boven, kozijn_dorpel_onder, kozijn_stijl_links, kozijn_stijl_rechts)
+        kozijn = Kozijn(zicht_kozijn_stijlen, kozijn_stijl_lengte, zicht_kozijn_boven, zicht_kozijn_onder, totaal_kozijn_breedte)
 
         raam_stijl_lengte = kozijn_stijl_lengte
 
