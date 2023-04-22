@@ -85,20 +85,77 @@ class Raam:
         linker_bovenhoek_raampjes_x = x + self.linkerstijl.breedte
         linker_bovenhoek_raampjes_y = y + self.bovendorpel.hoogte
 
-
         roede: Roede
         for roede in self.roedes:
-
             start_roede_x = linker_bovenhoek_raampjes_x + roede.x
             start_roede_y = linker_bovenhoek_raampjes_y + roede.y
 
             roede.draw(d, start_roede_x, start_roede_y)
 
 
-
-
 class RaamKozijn:
-    def __init__(self, kozijn: Kozijn, raam: Raam):
+    def __init__(self, zicht_kozijn_stijlen: int,
+                 zicht_kozijn_boven: int,
+                 zicht_kozijn_onder: int,
+                 zicht_raam_stijlen: int,
+                 zicht_raam_boven: int,
+                 zicht_raam_onder: int,
+                 breedte_roedes: int,
+                 roede_randje: int,
+                 aantal_roedes_staand: int,
+                 aantal_roedes_liggend: int,
+                 totaal_kozijn_breedte):
+
+        zicht_kozijn_plus_raam_breedte = zicht_kozijn_stijlen + zicht_raam_stijlen
+        totaal_zicht_kozijn_plus_raam_breedte = zicht_kozijn_plus_raam_breedte * 2
+
+        zicht_kozijn_raam_boven = zicht_kozijn_boven + zicht_raam_boven
+        zicht_kozijn_raam_onder = zicht_kozijn_onder + zicht_raam_onder
+        totaal_zicht_kozijn_plus_raam_hoogte = zicht_kozijn_raam_boven + zicht_kozijn_raam_onder
+
+        aantal_raampjes_horizontaal = aantal_roedes_staand + 1
+        aantal_raampjes_verticaal = aantal_roedes_liggend + 1
+
+        breedte_raampje = (totaal_kozijn_breedte
+                           - totaal_zicht_kozijn_plus_raam_breedte
+                           - (aantal_roedes_staand * breedte_roedes)) / aantal_raampjes_horizontaal
+
+        hoogte_raampje = (breedte_raampje / 3) * 4
+
+        kozijn_stijl_lengte = (hoogte_raampje * aantal_raampjes_verticaal) \
+                              + (aantal_roedes_liggend * breedte_roedes) \
+                              + zicht_raam_boven + zicht_raam_onder
+
+        totaal_hoogte_kozijn = kozijn_stijl_lengte + totaal_zicht_kozijn_plus_raam_hoogte
+
+        kozijn_stijl_links = Stijl(zicht_kozijn_stijlen, kozijn_stijl_lengte)
+        kozijn_stijl_rechts = Stijl(zicht_kozijn_stijlen, kozijn_stijl_lengte)
+
+        kozijn_dorpel_onder = Dorpel(zicht_kozijn_boven, totaal_kozijn_breedte)
+        kozijn_dorpel_boven = Dorpel(zicht_kozijn_onder, totaal_kozijn_breedte)
+
+        kozijn = Kozijn(kozijn_dorpel_boven, kozijn_dorpel_onder, kozijn_stijl_links, kozijn_stijl_rechts)
+
+        raam_stijl_lengte = kozijn_stijl_lengte
+
+        raam_stijl_links = Stijl(zicht_raam_stijlen, raam_stijl_lengte)
+        raam_stijl_rechts = Stijl(zicht_raam_stijlen, raam_stijl_lengte)
+
+        raam_dorpel_lengte = breedte_raampje * aantal_raampjes_horizontaal \
+                             + (breedte_roedes * aantal_roedes_staand)
+        raam_dorpel_onder = Dorpel(zicht_raam_onder, raam_dorpel_lengte)
+        raam_dorpel_boven = Dorpel(zicht_raam_boven, raam_dorpel_lengte)
+
+        raampjes = create_raampjes(aantal_raampjes_horizontaal, aantal_raampjes_verticaal, breedte_raampje,
+                                   hoogte_raampje,
+                                   breedte_roedes)
+
+        roedes = create_roedes(aantal_raampjes_horizontaal, aantal_raampjes_verticaal, breedte_raampje, hoogte_raampje,
+                               breedte_roedes, roede_randje)
+
+        raam = Raam(raam_dorpel_boven, raam_dorpel_onder, raam_stijl_links, raam_stijl_rechts, breedte_roedes,
+                    aantal_roedes_staand, aantal_roedes_liggend, raampjes, roedes)
+
         self.kozijn = kozijn
         self.raam = raam
         self.breedte = kozijn.breedte
@@ -287,69 +344,6 @@ def create_roedes(aantal_raampjes_horizontaal,
     return roedes
 
 
-def create_raam_kozijn(zicht_kozijn_stijlen: int,
-                       zicht_kozijn_boven: int,
-                       zicht_kozijn_onder: int,
-                       zicht_raam_stijlen: int,
-                       zicht_raam_boven: int,
-                       zicht_raam_onder: int,
-                       breedte_roedes: int,
-                       roede_randje: int,
-                       aantal_roedes_staand: int,
-                       aantal_roedes_liggend: int,
-                       totaal_kozijn_breedte) -> RaamKozijn:
-    zicht_kozijn_plus_raam_breedte = zicht_kozijn_stijlen + zicht_raam_stijlen
-    totaal_zicht_kozijn_plus_raam_breedte = zicht_kozijn_plus_raam_breedte * 2
-
-    zicht_kozijn_raam_boven = zicht_kozijn_boven + zicht_raam_boven
-    zicht_kozijn_raam_onder = zicht_kozijn_onder + zicht_raam_onder
-    totaal_zicht_kozijn_plus_raam_hoogte = zicht_kozijn_raam_boven + zicht_kozijn_raam_onder
-
-    aantal_raampjes_horizontaal = aantal_roedes_staand + 1
-    aantal_raampjes_verticaal = aantal_roedes_liggend + 1
-
-    breedte_raampje = (totaal_kozijn_breedte
-                       - totaal_zicht_kozijn_plus_raam_breedte
-                       - (aantal_roedes_staand * breedte_roedes)) / aantal_raampjes_horizontaal
-
-    hoogte_raampje = (breedte_raampje / 3) * 4
-
-    kozijn_stijl_lengte = (hoogte_raampje * aantal_raampjes_verticaal) \
-                          + (aantal_roedes_liggend * breedte_roedes) \
-                          + zicht_raam_boven + zicht_raam_onder
-
-    totaal_hoogte_kozijn = kozijn_stijl_lengte + totaal_zicht_kozijn_plus_raam_hoogte
-
-    kozijn_stijl_links = Stijl(zicht_kozijn_stijlen, kozijn_stijl_lengte)
-    kozijn_stijl_rechts = Stijl(zicht_kozijn_stijlen, kozijn_stijl_lengte)
-
-    kozijn_dorpel_onder = Dorpel(zicht_kozijn_boven, totaal_kozijn_breedte)
-    kozijn_dorpel_boven = Dorpel(zicht_kozijn_onder, totaal_kozijn_breedte)
-
-    kozijn = Kozijn(kozijn_dorpel_boven, kozijn_dorpel_onder, kozijn_stijl_links, kozijn_stijl_rechts)
-
-    raam_stijl_lengte = kozijn_stijl_lengte
-
-    raam_stijl_links = Stijl(zicht_raam_stijlen, raam_stijl_lengte)
-    raam_stijl_rechts = Stijl(zicht_raam_stijlen, raam_stijl_lengte)
-
-    raam_dorpel_lengte = breedte_raampje * aantal_raampjes_horizontaal \
-                         + (breedte_roedes * aantal_roedes_staand)
-    raam_dorpel_onder = Dorpel(zicht_raam_onder, raam_dorpel_lengte)
-    raam_dorpel_boven = Dorpel(zicht_raam_boven, raam_dorpel_lengte)
-
-    raampjes = create_raampjes(aantal_raampjes_horizontaal, aantal_raampjes_verticaal, breedte_raampje, hoogte_raampje,
-                               breedte_roedes)
-
-    roedes = create_roedes(aantal_raampjes_horizontaal, aantal_raampjes_verticaal, breedte_raampje, hoogte_raampje,
-                           breedte_roedes, roede_randje)
-
-    raam = Raam(raam_dorpel_boven, raam_dorpel_onder, raam_stijl_links, raam_stijl_rechts, breedte_roedes,
-                aantal_roedes_staand, aantal_roedes_liggend, raampjes, roedes)
-
-    return RaamKozijn(kozijn, raam)
-
-
 def create_rectangle_for_dorpel(x: int, y: int, dorpel: Dorpel) -> Rectangle:
     return Rectangle(x, y, dorpel.lengte, dorpel.hoogte,
                      fill='white', stroke='black', transform=f'scale({SCALE})')
@@ -390,5 +384,3 @@ def drawy_xy_as_line_on_d(d, coordinates: Coordinates):
     xy = [item for sublist in zip(coordinates.x_points, coordinates.y_points) for item in sublist]
     lines = Lines(*xy, stroke='black', stroke_width=1, fill='white', transform=f'scale({SCALE})')
     d.append(lines)
-
-
