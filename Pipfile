@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-drawsvg = {extras = ["all"], version = "*"}
+drawsvg = {extras = ["all"], version = "2.3.0"}
 
 [dev-packages]
 

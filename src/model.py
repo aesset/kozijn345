@@ -1,14 +1,14 @@
+from enum import Enum
+
 from drawsvg import Lines
-from drawsvg import Rectangle
-from drawsvg import Rectangle
-from drawsvg import Rectangle
-from drawsvg import Rectangle
 from drawsvg import Rectangle
 
 from config import SCALE
-from config import SCALE
-from config import SCALE
-from config import SCALE
+
+
+class Zijde(Enum):
+    BINNEN = 1
+    BUITEN = 2
 
 
 class Stijl:
@@ -32,7 +32,6 @@ class Dorpel:
 class Kozijn:
     def __init__(self, zicht_kozijn_stijlen, kozijn_stijl_lengte,
                  zicht_kozijn_boven, zicht_kozijn_onder, totaal_kozijn_breedte):
-
         self.linkerstijl = Stijl(zicht_kozijn_stijlen, kozijn_stijl_lengte)
         self.rechterstijl = Stijl(zicht_kozijn_stijlen, kozijn_stijl_lengte)
 
@@ -84,7 +83,7 @@ class Raam:
                                raampje.breedte, raampje.hoogte, fill='#eef4f5', stroke='black',
                                transform=f'scale({SCALE})'))
 
-    def draw_roedes(self, d, x, y):
+    def draw_roedes(self, d, x, y, zijde: Zijde):
         linker_bovenhoek_raampjes_x = x + self.linkerstijl.breedte
         linker_bovenhoek_raampjes_y = y + self.bovendorpel.hoogte
 
@@ -93,7 +92,7 @@ class Raam:
             start_roede_x = linker_bovenhoek_raampjes_x + roede.x
             start_roede_y = linker_bovenhoek_raampjes_y + roede.y
 
-            roede.draw(d, start_roede_x, start_roede_y)
+            roede.draw(d, start_roede_x, start_roede_y, zijde)
 
 
 class RaamKozijn:
@@ -107,8 +106,8 @@ class RaamKozijn:
                  roede_randje: int,
                  aantal_roedes_staand: int,
                  aantal_roedes_liggend: int,
-                 totaal_kozijn_breedte):
-
+                 totaal_kozijn_breedte,
+                 roede_latje_dikte: float):
         zicht_kozijn_plus_raam_breedte = zicht_kozijn_stijlen + zicht_raam_stijlen
         totaal_zicht_kozijn_plus_raam_breedte = zicht_kozijn_plus_raam_breedte * 2
 
@@ -131,7 +130,8 @@ class RaamKozijn:
 
         totaal_hoogte_kozijn = kozijn_stijl_lengte + totaal_zicht_kozijn_plus_raam_hoogte
 
-        kozijn = Kozijn(zicht_kozijn_stijlen, kozijn_stijl_lengte, zicht_kozijn_boven, zicht_kozijn_onder, totaal_kozijn_breedte)
+        kozijn = Kozijn(zicht_kozijn_stijlen, kozijn_stijl_lengte, zicht_kozijn_boven, zicht_kozijn_onder,
+                        totaal_kozijn_breedte)
 
         raam_stijl_lengte = kozijn_stijl_lengte
 
@@ -148,7 +148,7 @@ class RaamKozijn:
                                    breedte_roedes)
 
         roedes = create_roedes(aantal_raampjes_horizontaal, aantal_raampjes_verticaal, breedte_raampje, hoogte_raampje,
-                               breedte_roedes, roede_randje)
+                               breedte_roedes, roede_randje, roede_latje_dikte)
 
         raam = Raam(raam_dorpel_boven, raam_dorpel_onder, raam_stijl_links, raam_stijl_rechts, breedte_roedes,
                     aantal_roedes_staand, aantal_roedes_liggend, raampjes, roedes)
@@ -182,28 +182,29 @@ def create_raampjes(aantal_raampjes_horizontaal, aantal_raampjes_verticaal, bree
 
 
 class Roede:
-    def __init__(self, x, y, breedte, lengte, roede_randje, pos, verstek_begin: bool, verstek_eind: bool):
+    def __init__(self, x, y,
+                 breedte, lengte,
+                 roede_randje, pos,
+                 verstek_begin: bool,
+                 verstek_eind: bool,
+                 roede_latje_dikte: float):
         self.x = int(x)
         self.y = int(y)
         self.breedte = breedte
         self.lengte = int(lengte)
         self.roede_randje = roede_randje
-        self.pos = pos
+        self.orientation = pos
         self.verstek_begin = verstek_begin
         self.verstek_eind = verstek_eind
+        self.roede_latje_dikte = roede_latje_dikte
 
     def __str__(self):
         return f'Roede: {self.x},{self.y}, {self.breedte}x{self.lengte}x{self.roede_randje} ' \
-               f'pos={self.pos} verstek:{self.verstek_begin}/{self.verstek_eind}'
+               f'pos={self.orientation} verstek:{self.verstek_begin}/{self.verstek_eind}, ' \
+               f'roede-latje-dikte:{self.roede_latje_dikte}'
 
-    def draw(self, d, start_roede_x, start_roede_y):
-        x = start_roede_x
-        y = start_roede_y
-
-        coordinates = Coordinates()
-        coordinates.add(x, y)
-
-        if self.pos == 'h':
+    def draw_binnenzijde(self, d, start_roede_x, start_roede_y, coordinates):
+        if self.orientation == 'h':
             x, y = coordinates.move(self.lengte, 0)
 
             if self.verstek_eind:
@@ -219,7 +220,7 @@ class Roede:
 
             x, y = coordinates.move(0, -self.breedte)
 
-        if self.pos == 'v':
+        if self.orientation == 'v':
             x, y = coordinates.move(0, self.lengte)
 
             if self.verstek_eind:
@@ -239,62 +240,118 @@ class Roede:
 
         if self.roede_randje > 0:
 
-            if self.pos == 'h':
+            if self.orientation == 'h':
 
-                coordinates = Coordinates()
+                self.draw_horizontal_roede_randje(d, start_roede_x, start_roede_y)
 
-                if self.verstek_begin:
-                    x, y = coordinates.move(start_roede_x - self.roede_randje, start_roede_y + self.roede_randje)
-                else:
-                    x, y = coordinates.move(start_roede_x, start_roede_y + self.roede_randje)
+            if self.orientation == 'v':
 
-                x = start_roede_x + self.lengte
-                if self.verstek_eind:
-                    x += self.roede_randje
-                coordinates.add(x, y)
+                self.draw_vertical_roede_randje(d, start_roede_x, start_roede_y)
 
-                drawy_xy_as_line_on_d(d, coordinates)
+    def draw_buitenzijde(self, d, start_roede_x, start_roede_y, coordinates):
+        if self.orientation == 'h':
+            x, y = coordinates.move(self.lengte, 0)
+            diepte_sponning = (self.breedte - self.roede_latje_dikte) / 2
 
-                coordinates = Coordinates()
+            if self.verstek_eind:
+                x, y = coordinates.move(diepte_sponning, diepte_sponning)
+                x, y = coordinates.move(0, (diepte_sponning / 2))
+                x, y = coordinates.move((-diepte_sponning, diepte_sponning))
+            else:
+                x, y = coordinates.move(0, self.breedte)
 
-                y = start_roede_y + self.breedte - self.roede_randje
-                coordinates.add(x, y)
 
-                x = start_roede_x
-                if self.verstek_begin:
-                    x -= self.roede_randje
-                coordinates.add(x, y)
+            x, y = coordinates.move(0, self.breedte)
+            x, y = coordinates.move(-self.lengte, 0)
 
-                drawy_xy_as_line_on_d(d, coordinates)
+            if self.verstek_begin:
+                coordinates.set_without_memory(x - (self.breedte / 2),
+                                               y - (self.breedte / 2))
 
-            if self.pos == 'v':
+            x, y = coordinates.move(0, -self.breedte)
 
-                coordinates = Coordinates()
+        if self.orientation == 'v':
+            x, y = coordinates.move(0, self.lengte)
 
-                x = start_roede_x + self.roede_randje
-                y = start_roede_y
-                if self.verstek_begin:
-                    y -= self.roede_randje
-                coordinates.add(x, y)
+            if self.verstek_eind:
+                coordinates.set_without_memory(x + (self.breedte / 2),
+                                               y + (self.breedte / 2))
 
-                y = start_roede_y + self.lengte
-                if self.verstek_eind:
-                    y += self.roede_randje
-                coordinates.add(x, y)
+            x, y = coordinates.move(self.breedte, 0)
+            x, y = coordinates.move(0, -self.lengte)
 
-                drawy_xy_as_line_on_d(d, coordinates)
+            if self.verstek_begin:
+                coordinates.set_without_memory(x - (self.breedte / 2),
+                                               y - (self.breedte / 2))
 
-                coordinates = Coordinates()
+            x, y = coordinates.move(-self.breedte, 0)
 
-                x = start_roede_x + self.breedte - self.roede_randje
-                coordinates.add(x, y)
+        drawy_xy_as_line_on_d(d, coordinates)
 
-                y = start_roede_y
-                if self.verstek_begin:
-                    y -= self.roede_randje
-                coordinates.add(x, y)
+    def draw(self, d, start_roede_x, start_roede_y, zijde: Zijde):
 
-                drawy_xy_as_line_on_d(d, coordinates)
+        coordinates = Coordinates()
+        coordinates.add(start_roede_x, start_roede_y)
+
+        if zijde == Zijde.BINNEN:
+            self.draw_binnenzijde(d, start_roede_x, start_roede_y, coordinates)
+        if zijde == Zijde.BUITEN:
+            self.draw_buitenzijde(d, start_roede_x, start_roede_y, coordinates)
+
+    def draw_horizontal_roede_randje(self, d, start_roede_x, start_roede_y):
+        coordinates = Coordinates()
+
+        if self.verstek_begin:
+            x, y = coordinates.move(start_roede_x - self.roede_randje, start_roede_y + self.roede_randje)
+        else:
+            x, y = coordinates.move(start_roede_x, start_roede_y + self.roede_randje)
+
+        x = start_roede_x + self.lengte
+        if self.verstek_eind:
+            x += self.roede_randje
+        coordinates.add(x, y)
+
+        drawy_xy_as_line_on_d(d, coordinates)
+
+        coordinates = Coordinates()
+
+        y = start_roede_y + self.breedte - self.roede_randje
+        coordinates.add(x, y)
+
+        x = start_roede_x
+        if self.verstek_begin:
+            x -= self.roede_randje
+        coordinates.add(x, y)
+
+        drawy_xy_as_line_on_d(d, coordinates)
+
+    def draw_vertical_roede_randje(self, d, start_roede_x, start_roede_y):
+        coordinates = Coordinates()
+
+        x = start_roede_x + self.roede_randje
+        y = start_roede_y
+        if self.verstek_begin:
+            y -= self.roede_randje
+        coordinates.add(x, y)
+
+        y = start_roede_y + self.lengte
+        if self.verstek_eind:
+            y += self.roede_randje
+        coordinates.add(x, y)
+
+        drawy_xy_as_line_on_d(d, coordinates)
+
+        coordinates = Coordinates()
+
+        x = start_roede_x + self.breedte - self.roede_randje
+        coordinates.add(x, y)
+
+        y = start_roede_y
+        if self.verstek_begin:
+            y -= self.roede_randje
+        coordinates.add(x, y)
+
+        drawy_xy_as_line_on_d(d, coordinates)
 
 
 def create_roedes(aantal_raampjes_horizontaal,
@@ -302,7 +359,8 @@ def create_roedes(aantal_raampjes_horizontaal,
                   breedte_raampje,
                   hoogte_raampje,
                   breedte_roedes,
-                  roede_randje):
+                  roede_randje,
+                  roede_latje_dikte: float):
     roedes = []
 
     for x in range(aantal_raampjes_horizontaal):
@@ -319,7 +377,7 @@ def create_roedes(aantal_raampjes_horizontaal,
                 if x == aantal_raampjes_horizontaal - 1:
                     verstek_eind = False
                 roede = Roede(roede_x, roede_y, breedte_roedes, breedte_raampje, roede_randje,
-                              positie, verstek_begin, verstek_eind)
+                              positie, verstek_begin, verstek_eind, roede_latje_dikte)
                 print(f'Roede: {roede}')
                 roedes.append(roede)
 
@@ -334,7 +392,7 @@ def create_roedes(aantal_raampjes_horizontaal,
                 if y == aantal_raampjes_verticaal - 1:
                     verstek_eind = False
                 roede = Roede(roede_x, roede_y, breedte_roedes, hoogte_raampje, roede_randje,
-                              positie, verstek_begin, verstek_eind)
+                              positie, verstek_begin, verstek_eind, roede_latje_dikte)
                 print(f'Roede: {roede}')
                 roedes.append(roede)
 
@@ -343,11 +401,6 @@ def create_roedes(aantal_raampjes_horizontaal,
 
 def create_rectangle_for_dorpel(x: int, y: int, dorpel: Dorpel) -> Rectangle:
     return Rectangle(x, y, dorpel.lengte, dorpel.hoogte,
-                     fill='white', stroke='black', transform=f'scale({SCALE})')
-
-
-def create_rectangle_for_stijl(x: int, y: int, stijl: Stijl) -> Rectangle:
-    return Rectangle(x, y, stijl.breedte, stijl.lengte,
                      fill='white', stroke='black', transform=f'scale({SCALE})')
 
 
@@ -381,3 +434,8 @@ def drawy_xy_as_line_on_d(d, coordinates: Coordinates):
     xy = [item for sublist in zip(coordinates.x_points, coordinates.y_points) for item in sublist]
     lines = Lines(*xy, stroke='black', stroke_width=1, fill='white', transform=f'scale({SCALE})')
     d.append(lines)
+
+
+def create_rectangle_for_stijl(x: int, y: int, stijl: Stijl) -> Rectangle:
+    return Rectangle(x, y, stijl.breedte, stijl.lengte,
+                     fill='white', stroke='black', transform=f'scale({SCALE})')

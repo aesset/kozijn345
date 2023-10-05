@@ -1,4 +1,4 @@
-from src.kozijn import create_raam_kozijn
+from src.model import RaamKozijn
 
 
 def test_create_kozijn():
@@ -17,17 +17,13 @@ def test_create_kozijn():
 
     kozijn_breedte = 110
 
-    raam_kozijn = create_raam_kozijn(zicht_kozijn_stijlen, zicht_kozijn_boven, zicht_kozijn_onder,
-                                     zicht_raam_stijlen, zicht_raam_boven, zicht_raam_onder,
-                                     breedte_roedes, breedte_roedes_midden,
-                                     aantal_roedes_staand, aantal_roedes_liggend,
-                                     kozijn_breedte)
+    raam_kozijn = RaamKozijn(zicht_kozijn_stijlen, zicht_kozijn_boven, zicht_kozijn_onder,
+                             zicht_raam_stijlen, zicht_raam_boven, zicht_raam_onder,
+                             breedte_roedes, breedte_roedes_midden,
+                             aantal_roedes_staand, aantal_roedes_liggend,
+                             kozijn_breedte, roede_latje_dikte=2)
 
     assert raam_kozijn.kozijn.bovendorpel.lengte == kozijn_breedte
     assert raam_kozijn.kozijn.hoogte == 130
     assert len(raam_kozijn.raam.raampjes) == 4
     assert raam_kozijn.raam.raampjes[0].hoogte == 40
-    assert raam_kozijn.raam.roede_randje == 18
-
-
-

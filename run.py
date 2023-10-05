@@ -1,7 +1,8 @@
 from drawsvg import Drawing
 
 from config import SCALE
-from src.kozijn import RaamKozijn
+from src.model import RaamKozijn
+from src.model import Zijde
 
 zicht_kozijn_stijlen = 68
 zicht_kozijn_boven = 68
@@ -13,16 +14,19 @@ zicht_raam_onder = 85
 
 breedte_roedes = 21
 roede_randje = 4
-aantal_roedes_staand = 1
+aantal_roedes_staand = 2
 aantal_roedes_liggend = 2
+roede_latje_dikte = 5.6
 
-kozijn_breedte = 750
+kozijn_breedte = 800
 
 raam_kozijn = RaamKozijn(zicht_kozijn_stijlen, zicht_kozijn_boven, zicht_kozijn_onder,
                          zicht_raam_stijlen, zicht_raam_boven, zicht_raam_onder,
                          breedte_roedes, roede_randje,
                          aantal_roedes_staand, aantal_roedes_liggend,
-                         kozijn_breedte)
+                         kozijn_breedte,
+                         roede_latje_dikte,
+                         )
 
 canvas_marge = 10
 breedte_canvas = (raam_kozijn.breedte * SCALE) + canvas_marge
@@ -39,7 +43,7 @@ raam_start_x = kozijn.linkerstijl.breedte
 raam_start_y = kozijn.bovendorpel.hoogte
 raam.draw(d, raam_start_x, raam_start_y)
 
-raam.draw_roedes(d, raam_start_x, raam_start_y)
+raam.draw_roedes(d, raam_start_x, raam_start_y, Zijde.BINNEN)
 
 d.save_svg('output/kozijn.svg')
 d.save_html('output/kozijn.html')
